@@ -2,6 +2,18 @@ from flask import Flask, jsonify, request
 from dbmanager import db, MobilePhone
 from sqlalchemy.exc import IntegrityError
 from read_config import get_database_uri
+from phoneValidator import (
+    validate_serial_number,
+    validate_imei,
+    validate_model,
+    validate_brand,
+    validate_network_technologies,
+    validate_number_of_cameras,
+    validate_number_of_cores,
+    validate_weight,
+    validate_battery_capacity,
+    validate_cost,
+)
 
 import configparser
 
@@ -27,6 +39,7 @@ def index():
 def add_phone():
     data = request.get_json()
     try:
+        # Validate and convert the input data.
         phone = MobilePhone(
             serial_number=data['serial_number'],
             imei=data['imei'],
@@ -95,10 +108,22 @@ def update_phone(serial_number):
                 return jsonify({"error": f"Updating '{field}' is not allowed."}), 400
             if field in MobilePhone.__table__.columns.keys():
                 if field == 'network_technologies':
-                    setattr(phone, field, ",".join(value))
+                    try:
+                        validate_network_technologies(value)
+                        conVal = ",".join(value)
+                        setattr(phone, field, conVal)
+                    except ValueError:
+                        return jsonify({"error": f"Invalid type for field {field}."+str(e)}), 400
                 else:
                     try:
-                        setattr(phone, field, convert_field_value(field, value))
+                        conVal = convert_field_value(field, value)
+                        
+                        # Validate the value using the appropriate validator from phoneValidator.py
+                        validator_function = globals().get(f"validate_{field}")
+                        if validator_function:
+                            validator_function(value)
+                        
+                        setattr(phone, field, conVal)
                     except ValueError:
                         return jsonify({"error": f"Invalid type for field {field}. Expected {convert_field_value.__annotations__.get(field, 'appropriate type')}."}), 400
             else:
