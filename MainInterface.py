@@ -1,9 +1,17 @@
 from flask import Flask, jsonify, request
 from dbmanager import db, MobilePhone
 from sqlalchemy.exc import IntegrityError
+from read_config import get_database_uri
+
+import configparser
+
+# config = configparser.ConfigParser()
+# config.read('config.properties')
+database_uri = get_database_uri()
+# Example: sqlite:///app.db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
