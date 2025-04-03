@@ -4,11 +4,11 @@ set -e
 # Configuration
 NETWORK_NAME="phoneCatNetwork"
 MYSQL_CONTAINER_NAME="mysql-server"
-API_CONTAINER_NAME="rest-api"
+API_CONTAINER_NAME="phone-catalogue-api"
 MYSQL_ROOT_PASSWORD="mysecret"
 MYSQL_DATABASE="mydb"
 MYSQL_IMAGE="mysql:8"
-API_IMAGE="phoneCatAPI"
+API_IMAGE="phonecatapi"
 API_PORT=5000
 MYSQL_VOLUME_NAME="mysql_data_volume"
 MYSQL_USER="user"
@@ -39,7 +39,6 @@ docker rm -f "$API_CONTAINER_NAME" || true
 # Start MySQL container
 echo "Starting MySQL container..."
 docker run -d \
-  --rm \
   --name "$MYSQL_CONTAINER_NAME" \
   --network "$NETWORK_NAME" \
   -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
@@ -64,7 +63,6 @@ docker build -t "$API_IMAGE" .
 # Run the API container
 echo "Starting REST API container..."
 docker run -d \
-  --rm \
   --name "$API_CONTAINER_NAME" \
   --network "$NETWORK_NAME" \
   -e DATABASE_URI="$DATABASE_URI" \

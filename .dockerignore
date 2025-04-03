@@ -13,3 +13,8 @@ instance/app.db
 
 # Exclude VS Code settings (optional)
 .vscode/
+
+
+# exclude Dockerfile and tests
+Dockerfile
+tests/
