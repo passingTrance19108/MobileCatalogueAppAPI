@@ -1,0 +1,15 @@
+# Exclude Python cache files
+__pycache__/
+*.py[cod]
+
+# Exclude virtual environment
+venv/
+
+# Exclude SQLite database file
+instance/app.db
+
+# Exclude pytest cache
+.pytest_cache/
+
+# Exclude VS Code settings (optional)
+.vscode/
