@@ -41,6 +41,7 @@ echo "Starting MySQL container..."
 docker run -d \
   --name "$MYSQL_CONTAINER_NAME" \
   --network "$NETWORK_NAME" \
+  --network-alias mysql \
   -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
   -e MYSQL_DATABASE="$MYSQL_DATABASE" \
   -e MYSQL_USER="$MYSQL_USER" \

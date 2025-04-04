@@ -1,0 +1,63 @@
+
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8
+    container_name: phone-catalogue-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecret
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    
+    #no need to expose the port to the host
+    volumes:
+      - mysql_data_volume:/var/lib/mysql
+    networks:
+      - phoneCatalogNetwork
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    
+  api:
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+    container_name: phone-catalog-api
+    ports:
+      - 5000:5000
+    environment:
+      - DATABASE_URI=mysql+pymysql://user:password@mysql:3306/mydb
+    networks:
+      - phoneCatalogNetwork
+    depends_on:
+      mysql:
+        condition: service_healthy
+        restart: true
+
+networks:
+  phoneCatalogNetwork:
+    driver: bridge
+
+volumes:
+  mysql_data_volume:
+    driver: local
+  # This volume is used to persist MySQL data
+  # and is created automatically by Docker.
+  # You can specify a different driver or options if needed.
+  # For example, to use a named volume:
+  # mysql_data_volume:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     device: /path/to/your/data
+  #     o: bind
+  # This will bind mount the specified path on the host to the container.
+  # You can also specify other options like size, labels, etc.
+  # depending on your requirements.
+  # For more information, refer to the Docker documentation:
+  # https://docs.docker.com/engine/reference/commandline/volume_create/
