@@ -2,8 +2,8 @@
 set -e
 
 # Configuration
-NETWORK_NAME="phoneCatNetwork"
-MYSQL_CONTAINER_NAME="mysql-server"
+NETWORK_NAME="phoneCatalogNetwork"
+MYSQL_CONTAINER_NAME="phone-catalogue-mysql"
 API_CONTAINER_NAME="phone-catalogue-api"
 MYSQL_ROOT_PASSWORD="mysecret"
 MYSQL_DATABASE="mydb"

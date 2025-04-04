@@ -18,3 +18,6 @@ instance/app.db
 # exclude Dockerfile and tests
 Dockerfile
 tests/
+
+# exclude Docker related files
+Docker/
