@@ -3,7 +3,7 @@ set -e
 
 # Configuration
 NETWORK_NAME="phoneCatNetwork"
-MYSQL_CONTAINER_NAME="mysql-server"
+MYSQL_CONTAINER_NAME="phone-catalogue-mysql"
 API_CONTAINER_NAME="phone-catalogue-api"
 
 # Stop and remove the API container if it exists
