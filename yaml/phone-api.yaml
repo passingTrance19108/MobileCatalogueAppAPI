@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phone-api-deployment
+  labels:
+    app: phone-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: phone-api
+  template:
+    metadata:
+      labels:
+        app: phone-api
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: busybox
+        command: ["sh", "-c", "until nc -z mysql 3306; do echo 'Waiting for MySQL...'; sleep 2; done;"]
+      containers:
+      - name: phone-api
+        image: phonecatapi:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: DATABASE_URI
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        imagePullPolicy: Never
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "100m"
+        limits:
+          memory: "512Mi"
+          cpu: "200m"
+      restartPolicy: Always

@@ -1,13 +1,16 @@
 #!/bin/bash
 set -e
 
+# Define the API URI (adjust as needed for Minikube)
+API_URI="http://192.168.49.2:31236"  # Replace with your Minikube IP and NodePort or the docker container IP
+
 # Wait for the API to start
 echo "Waiting for the API to be ready..."
-sleep 10  # Adjust as needed for your environment
+sleep 5  # Adjust as needed for your environment
 
 # Test the root endpoint
 echo "Testing root endpoint..."
-root_response=$(curl -s http://localhost:5000/)
+root_response=$(curl -s $API_URI/)
 if echo "$root_response" | grep -q "Welcome"; then
     echo "✅ Root endpoint OK: $root_response"
 else
@@ -17,7 +20,7 @@ fi
 
 # Test the /phones endpoint (should return a JSON array)
 echo "Testing /phones endpoint..."
-phones_response=$(curl -s http://localhost:5000/phones)
+phones_response=$(curl -s $API_URI/phones)
 echo "Response from /phones: $phones_response"
 if echo "$phones_response" | grep -q "\["; then
     echo "✅ /phones endpoint returned a JSON array."
@@ -28,7 +31,7 @@ fi
 
 # Test adding a phone record
 echo "Testing adding a phone record via POST..."
-post_response=$(curl -s -X POST http://localhost:5000/add_phone \
+post_response=$(curl -s -X POST $API_URI/add_phone \
   -H "Content-Type: application/json" \
   -d '{
     "serial_number": "ABC12345678",
@@ -49,7 +52,7 @@ sleep 2
 
 # Test if the added record appears in /phones
 echo "Verifying the added phone record via GET /phones..."
-phones_response=$(curl -s http://localhost:5000/phones)
+phones_response=$(curl -s $API_URI/phones)
 echo "Response from /phones: $phones_response"
 if echo "$phones_response" | grep -q "ABC12345678"; then
     echo "✅ Added phone record found."
