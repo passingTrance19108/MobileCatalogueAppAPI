@@ -1,3 +1,4 @@
+https://github.com/passingTrance19108/MobileCatalogueAppAPI
 # Phone API
 
 A RESTful API for managing mobile phone data using Flask and SQLAlchemy. The API supports CRUD operations and flexible search functionality based on various phone fields (e.g., serial number, IMEI, brand, etc.). It features custom validation, robust error handling, and is prepared for future migration to a MySQL Docker environment.
